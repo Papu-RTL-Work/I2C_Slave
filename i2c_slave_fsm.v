@@ -3,8 +3,8 @@
 
 module i2c_slave_fsm(
 	input            rst_in          , // global reset signal
-   input            i2c_scl         , // serial clock line
-   inout            i2c_sda         , // serial data line 
+   	input            i2c_scl         , // serial clock line
+   	inout            i2c_sda         , // serial data line 
 	input      [7:0] data_in_from_ram, // data input from RAM 
 	output reg       wr_en_to_ram    , // write enable signal to enable writing data to ram
 	output reg       rd_en_to_ram    , // read enable signal to enable reading data from ram
@@ -13,10 +13,10 @@ module i2c_slave_fsm(
 	                                );
 
 	localparam  STATE_IDLE    = 3'h0 ; // idle
-   localparam  STATE_ADDR    = 3'h1 ; // the slave addr match
+  	localparam  STATE_ADDR    = 3'h1 ; // the slave addr match
 	localparam  SEND_ACK      = 3'h2 ; // send ack to master
-   localparam  STATE_READ    = 3'h3 ; // the op=read 
-   localparam  STATE_WRITE   = 3'h4 ; // write the data in the reg 
+  	localparam  STATE_READ    = 3'h3 ; // the op=read 
+   	localparam  STATE_WRITE   = 3'h4 ; // write the data in the reg 
 
 	reg [3:0] counter ; // counter counts no of clock pulses
 	reg [2:0] state   ; // used to define no of states in fsm
@@ -54,8 +54,7 @@ module i2c_slave_fsm(
 	assign i2c_sda = (enable == 1'b1) ? sda_out : 1'bz; // tristate logic enabled for master read and ack state
 	assign rw_bit  = (addr_out_to_ram[0]);              // rw_bit =1 for read and =0 for write
 	
-	//============STATE-MACHINE=============
-	
+	//============STATE-MACHINE=============	
 	always @(posedge rst_in or negedge i2c_scl)
 		begin
 			if(rst_in) // if asserted state goes to idle state
@@ -69,68 +68,68 @@ module i2c_slave_fsm(
 				begin
 					case(state)
 						STATE_IDLE  : begin  // idle state
-											wr_en_to_ram <= 1'b0;
-											rd_en_to_ram <= 1'b0;
-											if(start) // if start detects goes to ADDR_STATE else IDLE_STATE
-												begin
-													state   <= STATE_ADDR;
-													counter <= 4'd7      ;
-												end
-											else if(stop) 
-												state <= STATE_IDLE;
-											else 
-												state <= STATE_IDLE;
-										  end   // end idle state
+								wr_en_to_ram <= 1'b0;
+								rd_en_to_ram <= 1'b0;
+								if(start) // if start detects goes to ADDR_STATE else IDLE_STATE
+									begin
+										state   <= STATE_ADDR;
+										counter <= 4'd7      ;
+									end
+								else if(stop) 
+									state <= STATE_IDLE;
+								else 
+									state <= STATE_IDLE;
+							      end   // end idle state
 										  
 						STATE_ADDR  : begin // addr state
-											if(counter == 4'd0)
-												state <= SEND_ACK;											
-											else
-												begin
-													counter <= counter - 4'd1;
-													state   <= STATE_ADDR    ;
-												end
-										  end   // end addr state
+								if(counter == 4'd0)
+									state <= SEND_ACK;											
+								else
+									begin
+										counter <= counter - 4'd1;
+										state   <= STATE_ADDR    ;
+									end
+							      end   // end addr state
 										  
 						SEND_ACK    : begin // send ack to master 
-											if(rw_bit == 1'b1) 
-												begin
-													counter      <= 4'd7      ;
-													state        <= STATE_READ;
-													rd_en_to_ram <= 1'b1      ;
-												end
-											else if(rw_bit == 1'b0)
-												begin
-													counter <= 4'd7       ;
-													state   <= STATE_WRITE;
-												end
-											else
-												state <= STATE_IDLE;
-										  end   // end send ack state
+								if(rw_bit == 1'b1) 
+									begin
+										counter      <= 4'd7      ;
+										state        <= STATE_READ;
+										rd_en_to_ram <= 1'b1      ;
+									end
+								else if(rw_bit == 1'b0)
+									begin
+										counter <= 4'd7       ;
+										state   <= STATE_WRITE;
+									end
+								else
+									state <= STATE_IDLE;
+							      end   // end send ack state
 										  
 						STATE_READ  : begin // master read data from slave
-											rd_en_to_ram <= 1'b0;
-											if(counter == 4'd0)
-												state <= STATE_IDLE;
-											else
-												begin
-													state   <= STATE_READ    ;
-													counter <= counter - 4'd1;  
-												end
-										  end   // end read state
+								rd_en_to_ram <= 1'b0;
+								if(counter == 4'd0)
+									state <= STATE_IDLE;
+								else
+									begin
+										state   <= STATE_READ    ;
+										counter <= counter - 4'd1;  
+									end
+							      end   // end read state
 										  
 						STATE_WRITE : begin // master write data into slave 
-											if(counter == 4'd0)
-												begin
-													state        <= STATE_IDLE;
-													wr_en_to_ram <= 1'b1      ;
-												end
-											else
-												begin
-													state   <= STATE_WRITE   ;
-													counter <= counter - 4'd1;
-												end
-										  end   // end write state
+								if(counter == 4'd0)
+									begin
+										state        <= STATE_IDLE;
+										wr_en_to_ram <= 1'b1      ;
+									end
+								else
+									begin
+										state   <= STATE_WRITE   ;
+										counter <= counter - 4'd1;
+									end
+							      end   // end write state
 					endcase
 				end
 		end
@@ -150,28 +149,28 @@ module i2c_slave_fsm(
 				begin
 					case(state)
 						STATE_IDLE  : begin // idle state
-											enable  <= 1'b0;
-										  end   // end idle
+								enable  <= 1'b0;
+							      end   // end idle
 										  
 						STATE_ADDR  : begin // addr state
-											enable                   <= 1'b0   ;
-											addr_out_to_ram[counter] <= i2c_sda; // read addr by slave
-										  end   // end addr state
+								enable                   <= 1'b0   ;
+								addr_out_to_ram[counter] <= i2c_sda; // read addr by slave
+							      end   // end addr state
 										  
 						SEND_ACK    : begin // ack state slave send ack bit to master
-											enable  <= 1'b1 ;
-											sda_out <= 1'b0 ;
-										  end   // end ack state
+								enable  <= 1'b1 ;
+								sda_out <= 1'b0 ;
+							      end   // end ack state
 										  
 						STATE_READ  : begin // read state
-											enable  <= 1'b1                     ;
-											sda_out <= data_in_from_ram[counter]; // master read data from ram 
-										  end   // end read state
+								enable  <= 1'b1                     ;
+								sda_out <= data_in_from_ram[counter]; // master read data from ram 
+							      end   // end read state
 										  
 						STATE_WRITE : begin // write state
-											enable                   <= 1'b0    ;
-											data_out_to_ram[counter] <= i2c_sda ; // master write data to ram 
-										  end   // end write state
+								enable                   <= 1'b0    ;
+								data_out_to_ram[counter] <= i2c_sda ; // master write data to ram 
+							      end   // end write state
 					endcase
 				end
 		end
