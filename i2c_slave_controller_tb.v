@@ -17,7 +17,7 @@ module i2c_slave_controller_tb;
 	(.i2c_rst (rst)    , // global reset signal
 	 .i2c_scl (i2c_scl), // serial clock line
 	 .i2c_sda (i2c_sda)  // serial data line
-					      );
+			  );
 							
 	// Initialize all the inputs
 	task initialize;
