@@ -1,6 +1,5 @@
 
 // I2C RAM Memory
-
 `timescale 1ns/1ps
 module i2c_ram(
 	input            clock_in, // i2c_serial clock signal 
