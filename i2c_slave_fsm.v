@@ -1,6 +1,7 @@
 
 // slave interface design
 
+`timescale 1ns/1ps
 module i2c_slave_fsm(
 	input            rst_in          , // global reset signal
    	input            i2c_scl         , // serial clock line

@@ -1,6 +1,7 @@
 
 // slave controller design
 
+`timescale 1ns/1ps
 module i2c_slave_controller(
 	input i2c_rst, // global reset signal
 	input i2c_scl, // serial clock line
