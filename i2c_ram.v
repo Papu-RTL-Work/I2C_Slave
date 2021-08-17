@@ -2,6 +2,7 @@
 // I2C RAM Memory
 
 `timescale 1ns/1ps
+
 module i2c_ram(
 	input            clock_in, // i2c_serial clock signal 
 	input            reset_in, // global reset signal
@@ -10,7 +11,7 @@ module i2c_ram(
 	input      [6:0] addr_in , // address coming from i2c slave module
 	input      [7:0] data_in , // input data coming from i2c slave module
 	output reg [7:0] data_out  // output data going to i2c slave module
-				);
+				            );
 					
 	// reg_file declaration
 	reg [7:0] reg_file[0:127];
